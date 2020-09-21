@@ -3,7 +3,7 @@ import string
 from cryptography.fernet import Fernet
 
 print("What do you want to do?")
-print("Type 1 fif this is your first time using it.\nType 2 if already used before.\nType 3 for viewing previously saved passowords.")
+print("Type 1 if this is your first time using it.\nType 2 if already used before.\nType 3 for viewing previously saved passowords.")
 
 choice=input()
 
