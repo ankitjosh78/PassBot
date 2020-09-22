@@ -1,5 +1,5 @@
 # Password-Manager
- ### A password manager that generates numerous passwords for the user to use and stores it with encryption.
+ A password manager that generates numerous passwords for the user to use and stores it with encryption.
 
 ## What does it do?
   It stores in a encrypted way the user's username ,password and the site to which these credentials belong.
