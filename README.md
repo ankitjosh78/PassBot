@@ -8,3 +8,7 @@
   It takes input for the site,username and length of the password that the user needs.
   Then it gives a password to the user for his/her use and stores it in a file and encrypts that. 
   To view the password again ,the user need to decrypt the file using the provided key.
+## How to use?
+  ### 1)After cloning this repo ,go to the downloaded location and run pip3 install -r requirements.txt
+  ### 2)Next open terminal ,and run python password_Manager.py.
+  ### 3)Now follow the instructions on the screen.
