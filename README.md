@@ -7,4 +7,4 @@
   
   2)Next open terminal ,and run python password_Manager.py.
   
-  3)Now follow the instructions on the screen.
+  3)To get instructions ,type 'help'(This will tell you everything you need to know) 
