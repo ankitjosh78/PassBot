@@ -1,182 +1,179 @@
-import random
-import string
 from cryptography.fernet import Fernet
+import  base64
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import string
+import random
 
+sampleSpace=string.ascii_letters+string.digits+string.punctuation
 
-print("What do you want to do?")
-print("Type 1 if this is your first time using it.\nType 2 if already used before.\nType 3 for viewing previously saved passowords.")
+#Greeting!
+print("Hello, welcome to PassBot. This is a simple,easy to use password manager,to store all your important credentials.")
 
-choice=input()
+while True:
+    print("To know more, type 'help'")
+    print("If you are ready to use and this is your first time,Type 'New'\nIf already used before type 'Old")
 
-if choice=='1':
-    websitename=input("Enter the site name:")
-    username=input("Enter your username/email:")
+    userChoice=input("Enter your choice:").lower()
 
+    if userChoice=='new':
+        
+        while True:
+            readyOrNot=input("Now we shall ask you for your credentials.When ready type 'ready' else type 'quit':")
+            
+            #Credentials Input
+            if readyOrNot.lower()=="ready":
+                websiteName=input("Enter the website name whose details you want to save:")
+                username=input("Enter the username/email for the site:")
+                passChoice=input("If you want to use a strong generated password type 1 or If you want to use your own password type 2:")
+                
+                if passChoice=='1':
+                    passLen=int(input("Enter the length of the password that you want to use(e,g:8/10):"))
+                    password="".join(random.sample(sampleSpace,passLen))
+                
+                elif passChoice=='2':
+                    password=input("Enter the password that you want to use:")
+                
+                else:
+                    print("Wrong Choice")
+                    continue
 
-    s=string.ascii_letters + string.digits + string.punctuation
-    n=int(input("Enter length of the password that you need:"))
+                #Input for master password
+                masterPassword=input("Enter a master password to store all your credentials(make sure you remember it):").encode()
+                salt=b'salt_'
+                #Making a salt file
+                with open("salt.txt","w") as slt:
+                    slt.write(salt.decode())
+                
+                #One time process
+                kdf=PBKDF2HMAC(algorithm=hashes.SHA256(),length=32,salt=salt,iterations=100000,backend=default_backend())
+                #Deriving the key from the masterPassword and salt.
+                key=base64.urlsafe_b64encode(kdf.derive(masterPassword))
 
-    while True:
-        password="".join(random.sample(s,n))
+                s1='\n'+'Site:'+websiteName+'\n'
+                s2='User id:'+username+'\n'
+                s3='Password:'+password+'\n'
+                #Writing the credentials to a text file.
+                with open("credentials.txt","w") as file:
+                    file.write(s1+s2+s3)
 
-        print("Here's a password for you:",password)
-        print("If you want to use this password,type Yes for another password type No")
+                #Initializing the Fernet
+                f=Fernet(key)
+                #Encryption process
+                with open("credentials.txt") as file:
+                    data=file.read()
+                encryptedData=f.encrypt(bytes(data,encoding='utf8'))
 
-        inp=input().lower()
-        if inp=="no":
-            continue
+                with open("credentials.txt","w") as file:
+                    file.write(encryptedData.decode())
 
-        elif inp=="yes":
-            st1='\n'+"Site:"+websitename+'\n'
-            st2="Username/Email:"+username+'\n'
-            st3="Password:"+password+'\n'
+                print("Your credentials have been safely stored and are encrypted.")
+                break
+            elif readyOrNot.lower()=='quit':
+                quit()        
+            else:
+                print("Wrong Choice")
+        break
+    if userChoice=='old':
+        print("To enter new credentials type 1\nTo view saved passwords type 2:")
+        manageOrStore=input("Enter your choice:")
+        #If user wants to enter new data
+        if manageOrStore=='1':
+            masterPassword=input("Enter your master password:").encode()
+            
+            with open("salt.txt") as slt:
+                salt=slt.read().encode()
 
+            kdf=PBKDF2HMAC(algorithm=hashes.SHA256(),length=32,salt=salt,iterations=100000,backend=default_backend())
+            new_key=base64.urlsafe_b64encode(kdf.derive(masterPassword))
 
-            #Storing data
-            with open("credentials.txt","a") as file:
-                file.write(st1+st2+st3)
-            #Encryption Process
+            f=Fernet(new_key)
+            with open("credentials.txt") as file:
+                encryptedData=file.read()
+            
+            decryptedData=f.decrypt(bytes(encryptedData,encoding='utf8'))
 
-            def encrypt(filename,master):
-                f=Fernet(master)
+            with open("credentials.txt","w") as file:
+                file.write(decryptedData.decode())
+            
+            while True:
+                readyOrNot=input("Now we shall ask you for your credentials.When ready type 'ready' else type 'quit': ")
+                if readyOrNot.lower()=="ready":
+                    
+                    websiteName=input("Enter the website name whose details you want to save:")
+                    username=input("Enter the username/email for the site:")
+                    passChoice=input("If you want to use a strong generated password type 1 or If you want to use your own password type 2:")
+                    
+                    if passChoice=='1':
+                        passLen=int(input("Enter the length of the password that you want to use(e,g:8/10):"))
+                        password="".join(random.sample(sampleSpace,passLen))
+                    
+                    elif passChoice=='2':
+                        password=input("Enter the password that you want to use:")
+                    
+                    else:
+                        print("Wrong Choice")
+                        continue
+                    s1='\n'+'Site:'+websiteName+'\n'
+                    s2='User id:'+username+'\n'
+                    s3='Password:'+password+'\n'
+                    with open("credentials.txt","a") as file:
+                        file.write(s1+s2+s3)
+                    with open("credentials.txt") as file:
+                        data=file.read()
+                    encryptedData=f.encrypt(bytes(data,encoding='utf8'))
+                    with open("credentials.txt","w") as file:
+                        file.write(encryptedData.decode())
+                        print("Your credentials have been safely stored and are encrypted.")
+                    
+                    break
 
-                with open(filename,"r") as file:
-                    file_data=file.read()
+                #If user wants to quit        
+                elif readyOrNot.lower()=='quit':
+                    with open("credentials.txt") as file:
+                        data=file.read()
+                    encryptedData=f.encrypt(bytes(data,encoding='utf8'))
+                    with open("credentials.txt","w") as file:
+                        file.write(encryptedData.decode())
+                    quit()
 
-                encrypted_data=f.encrypt(bytes(file_data,encoding='utf8'))
+        #If user wants to view stored data
+        if manageOrStore=='2':
+            
+            masterPassword=input("Enter your master password to continue:").encode()
+            with open("salt.txt") as slt:
+                salt=slt.read().encode()
+            #Key deriving process
+            kdf=PBKDF2HMAC(algorithm=hashes.SHA256(),length=32,salt=salt,iterations=100000,backend=default_backend())
+            new_key=base64.urlsafe_b64encode(kdf.derive(masterPassword))
+            f=Fernet(new_key)
+            with open("credentials.txt") as file:
+                encryptedData=file.read()
+            
+            decryptedData=f.decrypt(bytes(encryptedData,encoding='utf8'))
 
-                with open(filename,"w") as file:
-                    file.write(encrypted_data.decode())
-
-
-            def write_key():
-                key=Fernet.generate_key()
-                with open("key.key","wb") as key_file:
-                    key_file.write(key)
-
-            def load_key():
-                return open("key.key","rb").read()
-
-            write_key()
-            filename="credentials.txt"
-            key=load_key()
-            encrypt(filename,key)
-
-            print("Your credentials have been saved to a file 'credentials.txt' in this directory \nand can be accessed by typing 3 the next time you run this program.")
-            break
-        else:
-            print("Please run this program again and choose yes or no.")
-            break
-
-if choice=='2':
-    websitename=input("Enter the site name:")
-    username=input("Enter your username/email:")
-
-
-    s=string.ascii_letters + string.digits + string.punctuation
-    n=int(input("Enter length of the password that you need:"))
-
-    while True:
-        password="".join(random.sample(s,n))
-
-        print("Here's a password for you:",password)
-        print("If you want to use this password,type Yes for another password type No")
-
-        inp=input().lower()
-        if inp=="no":
-            continue
-
-        elif inp=="yes":
-            st1='\n'+"Site:"+websitename+'\n'
-            st2="Username/Email:"+username+'\n'
-            st3="Password:"+password+'\n'
-
-            #Decrypting Previous Data
-
-            def decrypt_again(filename,master):
-                f=Fernet(master)
-                with open(filename) as file:
-                    encrypted_data=file.read()
-
-                decrypted_data=f.decrypt(bytes(encrypted_data,encoding='utf8'))
-
-                with open(filename,"w") as file:
-                    file.write(decrypted_data.decode())
-
-            def load_key_again1():
-                return open("key.key","rb").read()
-
-            key=load_key_again1()
-
-            filename='credentials.txt'
-            decrypt_again(filename,key)
-
-            #Storing data
-            with open("credentials.txt","a") as file:
-                file.write(st1+st2+st3)
-
-            def encrypt_again1(filename,master):
-                f=Fernet(master)
-
-                with open(filename,"r") as file:
-                    file_data=file.read()
-
-                encrypted_data=f.encrypt(bytes(file_data,encoding='utf8'))
-
-                with open(filename,"w") as file:
-                    file.write(encrypted_data.decode())
-
-
-            def write_key_again():
-                key=Fernet.generate_key()
-                with open("key.key","wb") as key_file:
-                    key_file.write(key)
-
-            def load_key_again2():
-                return open("key.key","rb").read()
-
-            write_key_again()
-            filename="credentials.txt"
-            key=load_key_again2()
-            encrypt_again1(filename,key)
-            print("Your credentials have been saved to a file 'credentials.txt' in this directory \nand can be accessed by typing 3 the next time you run this program.")
-            break
-        else:
-            print("Please run this program again and choose yes or no.")
-            break
-
-
-if choice=='3':
-    def decrypt(filename,master):
-        f=Fernet(master)
-        with open(filename) as file:
-            encrypted_data=file.read()
-
-        decrypted_data=f.decrypt(bytes(encrypted_data,encoding='utf8'))
-
-        with open(filename,"w") as file:
-            file.write(decrypted_data.decode())
-    def load_key_again():
-        return open("key.key","rb").read()
-
-    key=load_key_again()
-
-    filename='credentials.txt'
-    decrypt(filename,key)
-    print("You can now go to the file and open it see your credentials.\nWhen done type 'encrypt'")
-    while True:
-        inp=input()
-        if inp=='encrypt':
-            def encrypt_again(filename,master):
-                f=Fernet(master)
-
-                with open(filename,"r") as file:
-                    file_data=file.read()
-
-                encrypted_data=f.encrypt(bytes(file_data,encoding='utf8'))
-
-                with open(filename,"w") as file:
-                    file.write(encrypted_data.decode())
-            encrypt_again(filename,key)
-            print("Encrypted Succesfully.")
-            break
+            with open("credentials.txt","w") as file:
+                file.write(decryptedData.decode())
+            print("The file is now decrypted and you can go to it to see your credentials.")
+            
+            while True:
+                inp=input("When done type 'encrypt': ")
+                if inp.lower()=='encrypt':
+                    with open("credentials.txt") as file:
+                        data=file.read()
+                    encryptedData=f.encrypt(bytes(data,encoding='utf8'))
+                    with open("credentials.txt","w") as file:
+                        file.write(encryptedData.decode())
+                    print("Encrypted")
+                    break
+        break    
+            
+    if userChoice=='help':
+        print()
+        print("Right now,you are viewing the help section of PassBot(A simple yet quite effective password manager)")
+        print("If you are using this for the 1st time then type 'new' \n")
+        print("If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2\n")
+        print("If you have already used this and want to save another password,then type 'old' and choose 1")
+        print("You will now go back to the menu.")
+        print()
