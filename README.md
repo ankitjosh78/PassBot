@@ -4,5 +4,7 @@
  It stores user's credentials such as (email/password/website name) in a file and encrypts it with help of a master password from the user.
 ## How to use?
   1)After cloning this repo ,go to the downloaded location and run pip3 install -r requirements.txt
+  
   2)Next open terminal ,and run python password_Manager.py.
+  
   3)Now follow the instructions on the screen.
