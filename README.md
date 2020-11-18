@@ -8,5 +8,5 @@
   2)Next open terminal ,and run python password_Manager.py.
   
   3)To get instructions ,type 'help'(This will tell you everything you need to know) 
-### Working Video:
+### Working Video(Only 5 mins long):
    (https://youtu.be/crH_SJZGCBI)
