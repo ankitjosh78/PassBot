@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import string
 import random
+import os
 
 # Sample Space
 sampleSpace = string.ascii_letters + string.digits + string.punctuation
@@ -51,12 +52,12 @@ def keyDeriving(masterPassword, salt=None):
     # Making a salt file
     if salt != None:
         with open("salt.txt", "w") as slt:
-            slt.write(salt.decode())
+            slt.write(salt.decode('cp1252'))
     
     #When the salt file is already present
     elif salt == None:
         with open("salt.txt") as slt:
-            salt = slt.read().encode()
+            salt = slt.read().encode('cp1252')
 
     # One time process of deriving key from master password and salt.
 
@@ -173,7 +174,7 @@ while True:
 
 
                 # One time process
-                salt = b'salt_'
+                salt = os.urandom(16)
                 key = keyDeriving(masterPassword, salt)
 
 
