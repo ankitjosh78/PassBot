@@ -119,8 +119,26 @@ def decryptData(new_key):
     return
 
 
+# Help section
 
-# Greeting!
+
+def helpSection():
+    print()
+    print(
+        "Right now,you are viewing the help section of PassBot(A simple yet quite effective password manager)"
+    )
+    print("If you are using this for the 1st time then type 'new' \n")
+    print(
+        "If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2\n"
+    )
+    print(
+        "If you have already used this and want to save another password,then type 'old' and choose 1"
+    )
+    print("You will now go back to the menu.")
+    print()
+    return
+
+# Greetings!
 print(
     "Hello, welcome to PassBot. This is a simple,easy to use password manager,to store all your important credentials."
 )
@@ -128,7 +146,7 @@ print(
 while True:
     print("To know more, type 'help'")
     print(
-        "If you are ready to use and this is your first time,Type 'New'\nIf already used before type 'Old"
+        "If you are ready to use and this is your first time,Type 'New'\nIf already used before type 'Old'"
     )
 
     userChoice = input("Enter your choice:").lower()
@@ -227,16 +245,9 @@ while True:
         break
 
     if userChoice == 'help':
+        helpSection()
+    else:
+        print("Wrong Choice, you will be sent to the help section now")
         print()
-        print(
-            "Right now,you are viewing the help section of PassBot(A simple yet quite effective password manager)"
-        )
-        print("If you are using this for the 1st time then type 'new' \n")
-        print(
-            "If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2\n"
-        )
-        print(
-            "If you have already used this and want to save another password,then type 'old' and choose 1"
-        )
-        print("You will now go back to the menu.")
-        print()
+        helpSection()
+        
