@@ -1,4 +1,5 @@
 from cryptography.fernet import Fernet
+from cryptography.fernet import InvalidToken
 import base64
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -31,7 +32,7 @@ def getCredentials():
 
     elif passChoice == '2':
         password = input("Enter the password that you want to use:")
-    
+
     return [websiteName, username, password]
 
 
@@ -53,12 +54,19 @@ def keyDeriving(masterPassword, salt=None):
     if salt != None:
         with open("salt.txt", "w") as slt:
             slt.write(salt.decode('cp1252'))
-    
+
     #When the salt file is already present
     elif salt == None:
-        with open("salt.txt") as slt:
-            salt = slt.read().encode('cp1252')
-
+        try:
+            with open("salt.txt") as slt:
+                salt = slt.read().encode('cp1252')
+        # If salt file is not found then it has not been created or is removed.
+        except FileNotFoundError:
+            print()
+            print(
+                "Error! No entries found! They have been either deleted or not created at the first place."
+            )
+            quit()
     # One time process of deriving key from master password and salt.
 
     kdf = PBKDF2HMAC(algorithm=hashes.SHA256(),
@@ -113,11 +121,18 @@ def decryptData(new_key):
     with open("credentials.txt") as file:
         encryptedData = file.read()
 
-    decryptedData = f.decrypt(bytes(encryptedData, encoding='utf8'))
+    try:
+        decryptedData = f.decrypt(bytes(encryptedData, encoding='utf8'))
 
-    with open("credentials.txt", "w") as file:
-        file.write(decryptedData.decode())
-    return
+        with open("credentials.txt", "w") as file:
+            file.write(decryptedData.decode())
+
+        return
+    except InvalidToken:
+        print()
+        print("Wrong password, please try again!")
+
+        quit()
 
 
 # Help section
@@ -139,6 +154,7 @@ def helpSection():
     print()
     return
 
+
 # Greetings!
 print(
     "Hello, welcome to PassBot. This is a simple,easy to use password manager,to store all your important credentials."
@@ -147,7 +163,7 @@ print(
 while True:
     print("To know more, type 'help'")
     print(
-        "If you are ready to use and this is your first time,Type 'New'\nIf already used before type 'Old'"
+        "If you are ready to use and this is your first time,Type 'New'\nf already used before type 'Old'"
     )
 
     userChoice = input("Enter your choice:").lower()
@@ -168,19 +184,15 @@ while True:
                     str(x) for x in getCredentials()
                 ]
 
-
                 # Input for master password
                 masterPassword = getMasterPassword()
-
 
                 # One time process
                 salt = os.urandom(16)
                 key = keyDeriving(masterPassword, salt)
 
-
                 # writing the data
                 writeData(websiteName, username, password, 'w')
-
 
                 # Encryption process
                 encryptData(key, 1)
@@ -195,10 +207,10 @@ while True:
         print(
             "To enter new credentials type 1\nTo view saved passwords type 2:")
         manageOrStore = input("Enter your choice:")
-        
+
         # If user wants to enter new data
         if manageOrStore == '1':
-            
+
             masterPassword = input("Enter your master password:").encode()
 
             new_key = keyDeriving(masterPassword)
@@ -250,5 +262,4 @@ while True:
     else:
         print("Wrong Choice, you will be sent to the help section now")
         print()
-        helpSection()
-        
+        h
