@@ -27,11 +27,11 @@ def getCredentials():
                 "Enter the length of the password that you want to use(e,g:8/10) [MAX:94]:"
             ))
         password = "".join(random.sample(sampleSpace, passLen))
-        return [websiteName, username, password]
 
     elif passChoice == '2':
         password = input("Enter the password that you want to use:")
-        return [websiteName, username, password]
+    
+    return [websiteName, username, password]
 
 
 # For getting the master password
@@ -52,7 +52,8 @@ def keyDeriving(masterPassword, salt=None):
     if salt != None:
         with open("salt.txt", "w") as slt:
             slt.write(salt.decode())
-
+    
+    #When the salt file is already present
     elif salt == None:
         with open("salt.txt") as slt:
             salt = slt.read().encode()
