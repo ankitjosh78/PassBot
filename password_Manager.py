@@ -262,4 +262,3 @@ while True:
     else:
         print("Wrong Choice, you will be sent to the help section now")
         print()
-        h
