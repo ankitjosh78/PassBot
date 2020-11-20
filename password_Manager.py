@@ -8,9 +8,11 @@ import string
 import random
 import os
 
+
 # Sample Space
 sampleSpace = string.ascii_letters + string.digits + string.punctuation
 
+# Functions
 # For getting the credentials
 
 
@@ -39,10 +41,15 @@ def getCredentials():
 # For getting the master password
 
 
-def getMasterPassword():
-    masterPassword = input(
-        "Enter a master password to store all your credentials(make sure you remember it):"
-    ).encode()
+def getMasterPassword(case):
+    if case==1:
+        masterPassword = input(
+            "Enter a master password to store all your credentials(make sure you remember it):"
+        ).encode()
+    if case==2:
+        masterPassword = input(
+                "Enter your master password to continue:").encode()
+
     return masterPassword
 
 
@@ -52,14 +59,14 @@ def getMasterPassword():
 def keyDeriving(masterPassword, salt=None):
     # Making a salt file
     if salt != None:
-        with open("salt.txt", "w") as slt:
-            slt.write(salt.decode('cp1252'))
+        with open("salt.txt", "wb") as slt:
+            slt.write(salt)
 
     #When the salt file is already present
     elif salt == None:
         try:
-            with open("salt.txt") as slt:
-                salt = slt.read().encode('cp1252')
+            with open("salt.txt","rb") as slt:
+                salt = slt.read()
         # If salt file is not found then it has not been created or is removed.
         except FileNotFoundError:
             print()
@@ -145,7 +152,7 @@ def helpSection():
     )
     print("If you are using this for the 1st time then type 'new' \n")
     print(
-        "If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2\n"
+        "If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2n"
     )
     print(
         "If you have already used this and want to save another password,then type 'old' and choose 1"
@@ -154,7 +161,7 @@ def helpSection():
     print()
     return
 
-
+# Main program starts from here.
 # Greetings!
 print(
     "Hello, welcome to PassBot. This is a simple,easy to use password manager,to store all your important credentials."
@@ -163,7 +170,7 @@ print(
 while True:
     print("To know more, type 'help'")
     print(
-        "If you are ready to use and this is your first time,Type 'New'\nf already used before type 'Old'"
+        "If you are ready to use and this is your first time,Type 'New'\nIf already used before type 'Old'"
     )
 
     userChoice = input("Enter your choice:").lower()
@@ -185,7 +192,7 @@ while True:
                 ]
 
                 # Input for master password
-                masterPassword = getMasterPassword()
+                masterPassword = getMasterPassword(1)
 
                 # One time process
                 salt = os.urandom(16)
@@ -211,7 +218,7 @@ while True:
         # If user wants to enter new data
         if manageOrStore == '1':
 
-            masterPassword = input("Enter your master password:").encode()
+            masterPassword=getMasterPassword(2)
 
             new_key = keyDeriving(masterPassword)
 
@@ -240,8 +247,7 @@ while True:
         # If user wants to view stored data
         if manageOrStore == '2':
 
-            masterPassword = input(
-                "Enter your master password to continue:").encode()
+            masterPassword=getMasterPassword(2)
 
             new_key = keyDeriving(masterPassword)
             decryptData(new_key)
