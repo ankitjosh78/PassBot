@@ -1,0 +1,6 @@
+# Old details
+Old/
+
+# Ignore the credentials and salt file
+/credentials.txt
+/salt.txt
