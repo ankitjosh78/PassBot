@@ -26,10 +26,16 @@ def getCredentials():
     )
 
     if passChoice == '1':
-        passLen = int(
-            input(
-                "Enter the length of the password that you want to use(e,g:8/10) [MAX:94]:"
-            ))
+        passLen=16
+        passLenChoice=input("Default password length is 16, To use a longer/shorter password type 'n' else press any other key:")
+        if passLenChoice.lower()=="n":
+            passLen = int(
+                input(
+                    "Enter the length of the password that you want to use(e,g:8/10) [MAX:94]:"
+                ))
+            if(passLen > 94):
+                passLen=16
+                print("Password length too big , reverting back to default size of 10.")        
         password = "".join(random.sample(sampleSpace, passLen))
 
     elif passChoice == '2':
