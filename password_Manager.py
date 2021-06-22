@@ -31,7 +31,7 @@ def getCredentials():
         if passLenChoice.lower()=="n":
             passLen = int(
                 input(
-                    "Enter the length of the password that you want to use(e,g:8/10) [MAX:128]:"
+                    "Enter the length of the password that you want to use(e,g:8/10/69) [MAX:128]:"
                 ))
             if(passLen > 128):
                 passLen=16
