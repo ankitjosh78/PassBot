@@ -31,12 +31,15 @@ def getCredentials():
         if passLenChoice.lower()=="n":
             passLen = int(
                 input(
-                    "Enter the length of the password that you want to use(e,g:8/10) [MAX:94]:"
+                    "Enter the length of the password that you want to use(e,g:8/10) [MAX:128]:"
                 ))
-            if(passLen > 94):
+            if(passLen > 128):
                 passLen=16
-                print("Password length too big , reverting back to default size of 10.")        
-        password = "".join(random.sample(sampleSpace, passLen))
+                print("Password length too big , reverting back to default size of 16.")        
+        password=""
+        while passLen!=0:
+            password+=random.choice(sampleSpace)
+            passLen-=1
 
     elif passChoice == '2':
         password = input("Enter the password that you want to use:")
