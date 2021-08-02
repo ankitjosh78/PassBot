@@ -1,13 +1,12 @@
-from cryptography.fernet import Fernet
-from cryptography.fernet import InvalidToken
 import base64
+import os
+import random
+import string
+
+from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import string
-import random
-import os
-
 
 # Sample Space
 sampleSpace = string.ascii_letters + string.digits + string.punctuation
