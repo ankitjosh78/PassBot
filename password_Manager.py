@@ -160,7 +160,7 @@ def helpSection():
     )
     print("If you are using this for the 1st time then type 'new' \n")
     print(
-        "If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2n"
+        "If you have already used this to save some passwords and want to view them ,then type 'old' and choose option 2"
     )
     print(
         "If you have already used this and want to save another password,then type 'old' and choose 1"
