@@ -11,3 +11,15 @@
 ### Working Video(Only 5 mins long):
    (https://youtu.be/crH_SJZGCBI)
 ## (NOTE: You need to have Python 3.1 or above installed on your computer.)
+
+## Example video showing how to add a password for the first time:
+https://user-images.githubusercontent.com/62146611/128637704-a30525e8-3a3f-44ae-bc62-43be6b4ed92b.mp4
+
+
+## Example video showing how to view stored credentials:
+https://user-images.githubusercontent.com/62146611/128637706-3a25a563-acbb-413c-b1b4-0b1675065789.mp4
+
+
+## Example video showing how to add new passwords to the credentials file:
+https://user-images.githubusercontent.com/62146611/128637709-51f2b8bb-1894-45a2-89bf-4ef11272d5ce.mp4
+
